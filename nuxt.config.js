@@ -57,6 +57,7 @@ export default {
     // Doc: https://axios.nuxtjs.org/usage
     '@nuxtjs/axios',
     '@nuxtjs/pwa',
+    '@nuxtjs/auth'
   ],
   /*
   ** Axios module configuration
@@ -66,10 +67,27 @@ export default {
     proxy: true,
     baseURL: URL
   },
+
+  proxy: {
+    "/api": URL
+  },
   /*
   ** Build configuration
   ** See https://nuxtjs.org/api/configuration-build/
   */
   build: {
+  },
+
+  auth: {
+    strategies: {
+      local:{
+        endpoints:{
+          login: {
+            propertyName: "token"
+          },
+          logout: true
+        }
+      }
+    }
   }
 }
