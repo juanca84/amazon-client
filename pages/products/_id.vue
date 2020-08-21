@@ -50,7 +50,7 @@
                                         <!-- Author's name -->
                                         <div class="col-xl-4 col-lg-3 col-md-3 col-sm-3 col-3">
                                             <div class="authorNameCol">
-                                                <a href="#">{{ product.owner.name }}</a>
+                                                <!-- <a href="#">{{ product.owner.name }}</a> -->
                                             </div>
                                         </div>
                                         <!-- Author's Follow Button -->
@@ -331,25 +331,35 @@
                         </div>
                     </div>
                 </div>
+                <ReviewSection :product="product" :reviews="reviews"/>  
             </div>
         </div>
     </main>
 </template>
 
 <script>
-    export default {
-        async asyncData({ $axios, params }) {
-            try {
-                let response = await $axios.$get(`/api/products/${params.id}`);
-                console.log(response);
-                return {
-                    product: response.product
-                }
-            } catch (error) {
-                console.log(error);
+import ReviewSection from "~/components/ReviewSection"
+export default {
+    components: {
+        ReviewSection
+    },
+    async asyncData({ $axios, params }) {
+        try {
+            let singleProduct = $axios.$get(`/api/products/${params.id}`);
+            let manyReviews = $axios.$get(`/api/reviews/${params.id}`);
+            const [productResponse, reviewresponse] = await Promise.all([
+                singleProduct,
+                manyReviews
+            ]);
+            return {
+                product: productResponse.product,
+                reviews: reviewresponse.reviews
             }
-        },
-    }
+        } catch (error) {
+            console.log(error);
+        }
+    },
+}
 </script>
 
 <style lang="scss" scoped>
