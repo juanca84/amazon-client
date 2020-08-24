@@ -7,7 +7,9 @@
                 <ul class="a-unordered-list a-horizontal a-size-small">
                     <li>
                         <span class="a-list-item">
-                            <a href="#" class="a-link-normal a-color-tertiary">{{ product.category.type }}</a>
+                            <template v-if="product.category">
+                                <a href="#" class="a-link-normal a-color-tertiary">{{ product.category.type }}</a>
+                            </template>
                         </span>
                     </li>
                     <li>
@@ -43,7 +45,9 @@
                                         <div class="col-xl-3 col-lg-3 col-md-3 col-sm-3 col-3">
                                             <div class="smallAuthorImageContainer">
                                                 <a href="#">
-                                                    <img :src="product.owner.photo" alt="" class="img-fluid">
+                                                    <template v-if="product.owner">
+                                                        <img :src="product.owner.photo" alt="" class="img-fluid">
+                                                    </template>
                                                 </a>
                                             </div>
                                         </div>
@@ -82,13 +86,17 @@
                                 </h1>
                             </div>
                             <!-- Author's name -->
-                            <div class="bylineinfo">
+                            <div class="bylineinfo" v-if="product.owner">
                                 by
                                 <a href="#" class="authorName">{{ product.owner.name }}
                                     <i class="fa fa-chevrondown" style="font-size: 8px Important; color: #555 !important;"></i>
                                 </a> (Author)
                             </div>
-                            <div class="reviewGroup"></div>
+                            <div class="reviewGroup">
+                                <no-ssr>
+                                    <star-rating :rating="product.averagerRating" :show-rating="false" :glow="1" :border-width="1" :rounded-corners="true" :read-only="true" :star-size="18" :star-point="[23,2,14,17,0,19,10,34,7,50,23,43,38,50,36,34,46,19,31,17]"></star-rating>
+                                </no-ssr>
+                            </div>
                             <hr style="margin-top: 10px;">
                             <!-- A tags Dummy Data -->
                             <div class="mediaMatrix">
@@ -308,7 +316,7 @@
                                 <div class="col-md-2 col-sm-4 col-4">
                                     <div class="authorContent">
                                         <div class="authorImageSingle">
-                                            <a href="#">
+                                            <a href="#" v-if="product.owner">
                                                 <img :src="product.owner.photo" alt="" class="img-fluid"/>
                                             </a>
                                         </div>
@@ -322,7 +330,7 @@
                                 </div>
                                 <!-- Author's about -->
                                 <div class="col-md-10 col-sm-8 col-8 pl-0">
-                                    <div class="mainContent">
+                                    <div class="mainContent" v-if="product.owner">
                                         <h3>Biography</h3>
                                         <div id="authorBio">{{ product.owner.about }}</div>
                                     </div>
@@ -338,10 +346,12 @@
 </template>
 
 <script>
+import StarRating from "vue-star-rating";
 import ReviewSection from "~/components/ReviewSection"
 export default {
     components: {
-        ReviewSection
+        ReviewSection,
+        StarRating
     },
     async asyncData({ $axios, params }) {
         try {
